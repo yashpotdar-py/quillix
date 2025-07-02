@@ -1,0 +1,19 @@
+# web framework & async
+fastapi
+uvicorn[standard]
+httpx
+aiohttp
+
+# parsing & data
+beautifulsoup4
+pydantic
+
+# background tasks & broker
+celery[redis]
+
+# redis client
+redis
+aioredis
+
+# CLI
+click
