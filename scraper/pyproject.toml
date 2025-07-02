@@ -9,10 +9,10 @@ description = "A modular and extensible web scraper for tech trends"
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
-    {name = "Quillix Team", email = "team@quillix.com"}
+    {name = "Yash Yogesh Potdar", email = "yashyogeshpotdar7@gmail.com"}
 ]
 maintainers = [
-    {name = "Quillix Team", email = "team@quillix.com"}
+    {name = "Yash Yogesh Potdar", email = "ashyogeshpotdar7@gmail.com"}
 ]
 keywords = ["web-scraping", "tech-trends", "news", "data-extraction", "redis", "modular"]
 classifiers = [
