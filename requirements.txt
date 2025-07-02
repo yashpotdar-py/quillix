@@ -1,19 +1,22 @@
-# web framework & async
-fastapi
-uvicorn[standard]
-httpx
-aiohttp
+# Main dependencies are now defined in pyproject.toml
+# This file is kept for development convenience
 
-# parsing & data
-beautifulsoup4
-pydantic
+# Core dependencies (also in pyproject.toml)
+requests>=2.28.0
+beautifulsoup4>=4.11.0
+redis>=4.3.0
+click>=8.0.0
+python-dotenv>=0.19.0
 
-# background tasks & broker
-celery[redis]
+# Optional async dependencies
+httpx>=0.24.0
+aioredis>=2.0.0
 
-# redis client
-redis
-aioredis
-
-# CLI
-click
+# Development dependencies
+pytest>=7.0.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.0.0
+black>=22.0.0
+isort>=5.10.0
+flake8>=4.0.0
+mypy>=0.950
