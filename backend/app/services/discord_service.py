@@ -150,7 +150,7 @@ class DiscordService(BaseService):
         return await self.send_embed(embed)
 
     async def _send_webhook(self, payload: Dict[str, Any]) -> ServiceResponse:
-        """Senf webhook payload to Discord"""
+        """Send webhook payload to Discord"""
         if not self.client:
             return ServiceResponse(
                 success=False,
