@@ -161,7 +161,7 @@ class DiscordService(BaseService):
             response = await self.client.post(self.webhook_url, json=payload)
 
             if response.status_code == 204:
-                self.logger.info("Discord message sent successfull")
+                self.logger.info("Discord message sent successfully")
 
                 return ServiceResponse(
                     success=True,
