@@ -1,0 +1,12 @@
+# Core FastAPI dependencies
+fastapi
+uvicorn[standard]
+pydantic
+python-dotenv
+
+# HTTP client
+httpx
+
+# Additional utilities
+python-multipart
+pydantic-settings
