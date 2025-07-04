@@ -19,7 +19,7 @@ class ServiceManager:
         """Register all registered services"""
 
         self._services[service.name] = service
-        logger.info(f"Registred service: {service.name}")
+        logger.info(f"Registered service: {service.name}")
 
     def get_service(self, name: str) -> Optional[BaseService]:
         """Get a service by name"""
