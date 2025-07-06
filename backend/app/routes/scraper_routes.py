@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException, Query
 from typing import Optional, Dict, Any
 
 from ..core.service_manager import service_manager
-from ..services.discord_service import DiscordMessage, DiscordEmbed
+from ..services.discord_service import DiscordMessage, DiscordEmbed, WebhookType
 
 router = APIRouter(prefix="/scraper", tags=["Scraper"])
 
@@ -43,14 +43,14 @@ async def scrape_trends(
         raise HTTPException(
             status_code=400, detail=result.error or result.message)
 
-    # Send to Discord if requested
+    # Send to Discord if requested (using scraping webhook)
     if send_to_discord and result.data:
         discord_service = service_manager.get_service("discord")
         if discord_service:
             trends_data = result.data.get('trends', [])
 
-            # Create proper DiscordMessage object
-            summary_message = f"🔍 **Scraping Results**\n"
+            # Send summary using scraping webhook
+            summary_message = f"**Scraping Results**\n"
             summary_message += f"Source: {result.data.get('source', 'Unknown')}\n"
             summary_message += f"Total trends found: {result.data.get('total_count', 0)}\n"
             summary_message += f"Scraped at: {result.data.get('scraped_at', 'Unknown')}"
@@ -59,10 +59,10 @@ async def scrape_trends(
                 content=summary_message,
                 username="Quillix Scraper"
             )
-            await discord_service.send_message(discord_message)
+            await discord_service.send_message(discord_message, WebhookType.SCRAPING)
 
-            # Send top 3 trends as embeds
-            for i, trend in enumerate(trends_data[:3], 1):
+            # Send top 3 trends as embeds (using scraping webhook)
+            for i, trend in enumerate(trends_data, 1):
                 await discord_service.send_trend_notification(trend)
 
     return {
@@ -101,11 +101,12 @@ async def scrape_and_notify_all(
 
     trends_data = result.data.get('trends', [])
 
-    # Create proper DiscordEmbed object
+    # Send summary embed using scraping webhook
     summary_embed = DiscordEmbed(
-        title="🔍 New Scraping Results",
+        title="New Scraping Results",
         description=f"Found **{len(trends_data)}** trending topics from **{result.data.get('source', 'Unknown')}**",
         color=0x00ff00,
+        username="Quillix Scraper",
         fields=[
             {
                 "name": "Source",
@@ -125,9 +126,9 @@ async def scrape_and_notify_all(
         ]
     )
 
-    await discord_service.send_embed(summary_embed)
+    await discord_service.send_embed(summary_embed, WebhookType.SCRAPING)
 
-    # Send individual trends
+    # Send individual trends (automatically uses scraping webhook)
     sent_count = 0
     for trend in trends_data[:max_trends]:
         discord_result = await discord_service.send_trend_notification(trend)

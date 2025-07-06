@@ -20,8 +20,10 @@ class Settings(BaseSettings):
     host: str = "0.0.0.0"
     port: int = 8000
 
-    # Discord settings
-    discord_webhook_url: Optional[str] = None
+    # Discord settings - Multiple webhook URLs
+    discord_default_webhook_url: Optional[str] = None
+    discord_testing_webhook_url: Optional[str] = None
+    discord_scraping_webhook_url: Optional[str] = None
 
     # Redis settings
     redis_url: Optional[str] = None
@@ -33,8 +35,18 @@ class Settings(BaseSettings):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         # Load from environment variables
-        self.discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL")
+        self.discord_default_webhook_url = os.getenv(
+            "DISCORD_DEFAULT_WEBHOOK_URL")
+        self.discord_testing_webhook_url = os.getenv(
+            "DISCORD_TESTING_WEBHOOK_URL")
+        self.discord_scraping_webhook_url = os.getenv(
+            "DISCORD_SCRAPING_WEBHOOK_URL")
         self.redis_url = os.getenv("REDIS_URL")
+
+    @property
+    def discord_webhook_url(self) -> Optional[str]:
+        """Fallback property for backward compatibility"""
+        return self.discord_default_webhook_url
 
 
 settings = Settings()
