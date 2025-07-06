@@ -9,7 +9,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from .core.config import settings
 from .core.service_manager import service_manager
 from .services.discord_service import DiscordService
-from .routes import discord_routes, system_routes
+from .services.scraper_service import ScraperService
+from .routes import discord_routes, system_routes, scraper_routes
 
 # Configure logging
 logging.basicConfig(
@@ -27,6 +28,7 @@ async def lifespan(app: FastAPI):
 
     # Register services
     service_manager.register_service(DiscordService())
+    service_manager.register_service(ScraperService())
 
     # Initialize all services
     init_results = await service_manager.initialize_all()
@@ -66,6 +68,7 @@ app.add_middleware(
 # Register routes
 app.include_router(system_routes.router)
 app.include_router(discord_routes.router)
+app.include_router(scraper_routes.router)
 
 
 @app.get("/")
@@ -75,7 +78,13 @@ async def root():
         "app": settings.app_name,
         "version": settings.app_version,
         "status": "running",
-        "services": service_manager.list_services()
+        "services": service_manager.list_services(),
+        "endpoints": {
+            "docs": "/docs",
+            "health": "/health",
+            "discord": "/discord",
+            "scraper": "/scraper"
+        }
     }
 
 
