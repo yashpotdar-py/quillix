@@ -9,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from .core.config import settings
 from .core.service_manager import service_manager
 from .services.discord_service import DiscordService
+from .services.discord_bot_service import DiscordBotService
 from .services.scraper_service import ScraperService
 from .routes import discord_routes, system_routes, scraper_routes
 
@@ -28,13 +29,13 @@ async def lifespan(app: FastAPI):
 
     # Register services
     service_manager.register_service(DiscordService())
+    service_manager.register_service(DiscordBotService())
     service_manager.register_service(ScraperService())
 
     # Initialize all services
     init_results = await service_manager.initialize_all()
 
-    failed_services = [name for name,
-                       success in init_results.items() if not success]
+    failed_services = [name for name, success in init_results.items() if not success]
     if failed_services:
         logger.warning(f"⚠️  Failed to initialize services: {failed_services}")
 

@@ -10,3 +10,6 @@ httpx
 # Additional utilities
 python-multipart
 pydantic-settings
+
+# discord
+discord.py
