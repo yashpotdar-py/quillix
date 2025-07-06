@@ -21,7 +21,7 @@ curl -s "$BASE_URL/scraper/scrapers" | jq '.'
 echo -e "\n5. Testing scrape (without Discord)..."
 curl -s -X POST "$BASE_URL/scraper/scrape?scraper_name=techcrunch&send_to_discord=false" | jq '.data.total_count'
 
-echo -e "\n5. Testing scrape (with Discord)..."
+echo -e "\n6. Testing scrape (with Discord)..."
 curl -s -X POST "$BASE_URL/scraper/scrape?scraper_name=techcrunch&send_to_discord=true" | jq '.data.total_count'
 
 echo -e "\n✅ Quick tests completed!"
