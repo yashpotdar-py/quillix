@@ -30,7 +30,7 @@ class TechCrunchScraper(BaseScraper):
         article_links = self._find_article_links(soup)
         if article_links:
             logger.info(f"Found {len(article_links)} article links")
-            for link in article_links[:15]:
+            for link in article_links[:25]:
                 trend_data = self._create_trend_from_link(link, url)
                 if trend_data:
                     collection.add_trend(trend_data)
@@ -40,7 +40,7 @@ class TechCrunchScraper(BaseScraper):
             articles = self._find_articles(soup)
             logger.info(f"Found {len(articles)} article containers")
             
-            for article in articles[:15]:
+            for article in articles[:25]:
                 try:
                     trend_data = self._extract_trend_from_article(article, url)
                     if trend_data:
@@ -247,6 +247,7 @@ class TechCrunchScraper(BaseScraper):
         text = f"{title} {summary}".lower()
         
         # Enhanced keyword matching
+        # TODO: Improve keywords
         tech_keywords = {
             'ai': ['ai', 'artificial intelligence', 'machine learning', 'ml', 'llm'],
             'startup': ['startup', 'founded', 'launches', 'new company'],

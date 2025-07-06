@@ -137,6 +137,96 @@ async def scrape_and_notify_all(
     return {
         "status": "success",
         "message": f"Scraped {len(trends_data)} trends, sent {sent_count} to Discord",
+        "data": result.data,
         "scraped_count": len(trends_data),
         "sent_to_discord": sent_count
     }
+
+
+# Helper functions for bot commands
+async def _send_consolidated_report(discord_service, scrape_data: Dict[str, Any], style: str = "detailed"):
+    """Send a consolidated scraping report."""
+    trends_data = scrape_data.get('trends', [])
+    
+    if style == "summary":
+        # Send summary embed
+        summary_embed = DiscordEmbed(
+            title="📊 Scraping Summary",
+            description=f"Found **{len(trends_data)}** trends from **{scrape_data.get('source', 'Unknown')}**",
+            color=0x3498db,
+            fields=[
+                {
+                    "name": "Total Trends",
+                    "value": str(len(trends_data)),
+                    "inline": True
+                },
+                {
+                    "name": "Source",
+                    "value": scrape_data.get('source', 'Unknown'),
+                    "inline": True
+                }
+            ]
+        )
+        await discord_service.send_embed(summary_embed)
+        
+        # Send top 3 trends
+        for trend in trends_data[:3]:
+            await discord_service.send_trend_notification(trend)
+    
+    else:  # detailed
+        # Send detailed report with more trends
+        summary_embed = DiscordEmbed(
+            title="🔍 Detailed Scraping Report",
+            description=f"Comprehensive analysis of **{len(trends_data)}** trends from **{scrape_data.get('source', 'Unknown')}**",
+            color=0x2ecc71,
+            fields=[
+                {
+                    "name": "Total Trends",
+                    "value": str(len(trends_data)),
+                    "inline": True
+                },
+                {
+                    "name": "Source",
+                    "value": scrape_data.get('source', 'Unknown'),
+                    "inline": True
+                },
+                {
+                    "name": "Scraped At",
+                    "value": scrape_data.get('scraped_at', 'Unknown')[:19].replace('T', ' '),
+                    "inline": True
+                }
+            ]
+        )
+        await discord_service.send_embed(summary_embed)
+        
+        # Send top 5 trends for detailed report
+        for trend in trends_data[:5]:
+            await discord_service.send_trend_notification(trend)
+
+
+async def _send_daily_digest(discord_service, scrape_data: Dict[str, Any]):
+    """Send a daily digest report."""
+    trends_data = scrape_data.get('trends', [])
+    
+    # Create digest embed
+    digest_embed = DiscordEmbed(
+        title="📰 Daily Tech Trends Digest",
+        description=f"Today's top trending topics in tech from **{scrape_data.get('source', 'Unknown')}**",
+        color=0xe74c3c,
+        fields=[
+            {
+                "name": "📊 Statistics",
+                "value": f"• **{len(trends_data)}** total trends\n• **{len([t for t in trends_data if t.get('tags')])}** tagged trends\n• Source: {scrape_data.get('source', 'Unknown')}",
+                "inline": False
+            }
+        ]
+    )
+    await discord_service.send_embed(digest_embed)
+    
+    # Send top trending items
+    for i, trend in enumerate(trends_data[:3], 1):
+        digest_trend = {
+            **trend,
+            'title': f"#{i} {trend.get('title', 'Untitled')}"
+        }
+        await discord_service.send_trend_notification(digest_trend)
