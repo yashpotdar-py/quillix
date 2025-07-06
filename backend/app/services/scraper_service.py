@@ -66,7 +66,7 @@ class ScraperService(BaseService):
         pass
 
     async def scrape_trends(self, scraper_name: str = "techcrunch", url: Optional[str] = None) -> ServiceResponse:
-        """Scrape trends using the specifide scraper"""
+        """Scrape trends using the specified scraper"""
         if not self.scraper_manager:
             return ServiceResponse(
                 success=False,
