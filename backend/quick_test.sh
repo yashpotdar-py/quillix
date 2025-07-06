@@ -1,6 +1,7 @@
 #!/bin/bash
+echo "=============================================="
 echo "🧪 Testing Quillix Backend Discord Webhooks"
-echo "==========================================="
+echo "=============================================="
 
 BASE_URL="http://localhost:8000"
 
@@ -25,10 +26,23 @@ curl -s -X POST "$BASE_URL/discord/send-system-notification" \
 echo -e "\n5. Testing health check message..."
 curl -s -X POST "$BASE_URL/discord/health-check" | jq '.'
 
-echo -e "\n6. Testing scraping with Discord (uses scraping webhook)..."
-curl -s -X POST "$BASE_URL/scraper/scrape?scraper_name=techcrunch&send_to_discord=true" | jq '.status'
+echo "=============================================="
+echo "🧪 Testing Quillix Backend Consolidated Reports"
+echo "=============================================="
 
-echo -e "\n7. Testing scrape and notify (uses scraping webhook)..."
-curl -s -X POST "$BASE_URL/scraper/scrape-and-notify?scraper_name=techcrunch&max_trends=2" | jq '.status'
+BASE_URL="http://localhost:8000"
 
+echo "1. Testing Summary Report..."
+curl -s -X POST "$BASE_URL/scraper/scrape-and-notify?scraper_name=techcrunch&report_style=summary" | jq '.status'
+
+echo -e "\n2. Testing Compact Report..."
+curl -s -X POST "$BASE_URL/scraper/scrape-and-notify?scraper_name=techcrunch&report_style=compact" | jq '.status'
+
+echo -e "\n3. Testing Detailed Report..."
+curl -s -X POST "$BASE_URL/scraper/scrape-and-notify?scraper_name=techcrunch&report_style=detailed" | jq '.status'
+
+echo -e "\n4. Testing Daily Digest..."
+curl -s -X POST "$BASE_URL/scraper/send-daily-digest?scraper_name=techcrunch" | jq '.status'
+
+echo -e "\n✅ Report tests completed!"
 echo -e "\n✅ Webhook tests completed!"
